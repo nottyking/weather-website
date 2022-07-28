@@ -1,19 +1,17 @@
 const express = require('express')
 const path = require('path')
 const hbs = require('hbs')
+const cors = require('cors');
 const forecastByLocation = require('./utils/forecast-by-location')
 
 const app = express()
 
+app.use(cors());
 
 const publicDirectory = path.join(__dirname,'../public')
 const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
 
-// console.log(__dirname)
-// console.log(__filename)
-// console.log(path.join(__dirname, '../public'))
-// console.log(`${__dirname}/../public'`)
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
@@ -36,9 +34,11 @@ app.get('/weather', (req, res)=>{
   }
 
   forecastByLocation(req.query.address, (err, data)=>{
+    console.log('222', err);
     if(err){
       return res.send(err)
     }
+    console.log('data', data);
     res.send({
       forecast: data.weather_description,
       location: data.name,
@@ -77,5 +77,5 @@ app.get('/*', (req, res)=>{
 })
 
 app.listen(3001, ()=>{
-  console.log('Server is up on port 3000')
+  console.log('Server is up on port 3001')
 })
